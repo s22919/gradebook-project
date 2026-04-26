@@ -1,0 +1,46 @@
+name: Test and Build Workflow
+
+# Wykonywanie automatycznie po operacji push na gałąź master lub main
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Krok zerowy: Pobranie kodu repozytorium na maszynę wirtualną
+      - name: Pobranie kodu repozytorium
+        uses: actions/checkout@v4
+
+      # Krok zerowy: Instalacja i konfiguracja środowiska Java
+      - name: Konfiguracja środowiska Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # 1. Uruchomienie aplikacji przy pomocy mvn exec
+      - name: 1. Uruchomienie aplikacji (Dry run)
+        run: mvn clean compile exec:java
+
+      # 2. Wykonanie testów jednostkowych
+      - name: 2. Wykonanie testów jednostkowych
+        run: mvn test
+
+      # 3. Test pakowania aplikacji do formatu Java Archive (.jar)
+      # Używamy flagi -DskipTests, aby nie uruchamiać testów ponownie (wykonaliśmy je krok wcześniej)
+      - name: 3. Pakowanie aplikacji do pliku .jar
+        run: mvn package -DskipTests
+
+      # 4. Przygotowanie zbudowanego pliku .jar do pobrania
+      - name: 4. Udostępnienie pliku .jar jako artefaktu
+        uses: actions/upload-artifact@v4
+        with:
+          name: aplikacja-jar
+          path: target/*.jar
+          retention-days: 7 # Artefakt będzie dostępny do pobrania przez 7 dni
