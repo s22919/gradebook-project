@@ -28,17 +28,25 @@ jobs:
       - name: 1. Uruchomienie aplikacji (Dry run)
         run: mvn clean compile exec:java
 
-      # 2. Wykonanie testów jednostkowych
-      - name: 2. Wykonanie testów jednostkowych
+      # 2. Audyt jakości kodu przy pomocy Super-linter
+      - name: 2. Audyt jakości kodu (Super-linter)
+        uses: github/super-linter@v7
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+
+      # 3. Wykonanie testów jednostkowych
+      - name: 3. Wykonanie testów jednostkowych
         run: mvn test
 
-      # 3. Test pakowania aplikacji do formatu Java Archive (.jar)
+      # 4. Test pakowania aplikacji do formatu Java Archive (.jar)
       # Używamy flagi -DskipTests, aby nie uruchamiać testów ponownie (wykonaliśmy je krok wcześniej)
-      - name: 3. Pakowanie aplikacji do pliku .jar
+      - name: 4. Pakowanie aplikacji do pliku .jar
         run: mvn package -DskipTests
 
-      # 4. Przygotowanie zbudowanego pliku .jar do pobrania
-      - name: 4. Udostępnienie pliku .jar jako artefaktu
+      # 5. Przygotowanie zbudowanego pliku .jar do pobrania
+      - name: 5. Udostępnienie pliku .jar jako artefaktu
         uses: actions/upload-artifact@v4
         with:
           name: aplikacja-jar
