@@ -42,7 +42,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <mainClass>Main</mainClass>
+                    <mainClass>gradebook.Main</mainClass>
                 </configuration>
             </plugin>
 
@@ -55,7 +55,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>Main</mainClass>
+                            <mainClass>gradebook.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
